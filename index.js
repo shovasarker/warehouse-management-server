@@ -54,6 +54,7 @@ const run = async () => {
     const itemsCollection = client.db('wmdb').collection('items')
     const bannersCollection = client.db('wmdb').collection('banners')
     const chartDataCollection = client.db('wmdb').collection('chartData')
+    const brandsCollection = client.db('wmdb').collection('brands')
 
     app.post('/signin', async (req, res) => {
       const user = req.body
@@ -65,7 +66,7 @@ const run = async () => {
 
     //Getting all items from the db
     app.get('/items', async (req, res) => {
-      const query = {}
+      const query = req.query
       const cursor = itemsCollection.find(query)
       const result = await cursor.toArray()
 
@@ -134,9 +135,19 @@ const run = async () => {
       res.send(result)
     })
 
+    // getting chart data from db
     app.get('/chart', async (req, res) => {
       const query = {}
       const cursor = chartDataCollection.find(query)
+      const result = await cursor.toArray()
+
+      res.send(result)
+    })
+
+    // getting brands data from db
+    app.get('/brands', async (req, res) => {
+      const query = {}
+      const cursor = brandsCollection.find(query)
       const result = await cursor.toArray()
 
       res.send(result)
