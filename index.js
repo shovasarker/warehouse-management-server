@@ -29,12 +29,23 @@ const run = async () => {
   try {
     await client.connect()
 
+    const itemsCollection = client.db('wmdb').collection('items')
+
     app.post('/signin', async (req, res) => {
       const user = req.body
       const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: '1d',
       })
       res.send({ accessToken })
+    })
+
+    //Getting all items from the db
+    app.get('/items', async (req, res) => {
+      const query = {}
+      const cursor = itemsCollection.find(query)
+      const result = await cursor.toArray()
+
+      res.send(result)
     })
   } finally {
   }
