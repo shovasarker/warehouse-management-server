@@ -1,3 +1,4 @@
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb')
 const express = require('express')
 const cors = require('cors')
 require('dotenv').config()
@@ -17,7 +18,6 @@ app.get('/', (req, res) => {
 
 //mongodb connect
 
-const { MongoClient, ServerApiVersion } = require('mongodb')
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.87qpx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
@@ -54,6 +54,28 @@ const run = async () => {
       const query = {}
       const cursor = bannersCollection.find(query)
       const result = await cursor.toArray()
+
+      res.send(result)
+    })
+
+    //getting one specific item from the db
+    app.get('/item/:id', async (req, res) => {
+      const { id } = req.params
+      const query = { _id: ObjectId(id) }
+      const result = await itemsCollection.findOne(query)
+
+      res.send(result)
+    })
+
+    //updating one items quantity
+    app.put('/item/:id', async (req, res) => {
+      const { id } = req.params
+      const item = req.body
+      const filter = { _id: ObjectId(id) }
+      const options = { upsert: true }
+      const updateDoc = { $set: item }
+
+      const result = await itemsCollection.updateOne(filter, updateDoc, options)
 
       res.send(result)
     })
