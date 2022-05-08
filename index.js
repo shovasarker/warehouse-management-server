@@ -88,6 +88,14 @@ const run = async () => {
 
       res.send(result)
     })
+
+    //inserting an item
+    app.post('/item', async (req, res) => {
+      const newItem = req.body
+      const result = await itemsCollection.insertOne(newItem)
+
+      res.send(result)
+    })
   } finally {
   }
 }
